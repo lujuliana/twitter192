@@ -1,0 +1,87 @@
+{% block content %}
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Twitter</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+        <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+        <style>
+          body {
+          color: rgb(51, 49, 49);
+          text-align: center;
+          } 
+          .title {
+            color: rgb(8, 182, 235);;
+          }
+          .tweet-card{ 
+            box-shadow: 0 16px 48px #E3E7EB;
+            text-align: left;
+            padding-right: 0.5rem;
+          }
+          .username {
+            color: rgb(8, 182, 235);
+          }
+          .link {
+            color: rgb(8, 182, 235);
+          }
+          .link:hover {
+            text-decoration: none;
+            color: lightcoral;
+          }
+          .button:hover {
+            color: rgb(8, 182, 235);
+          }
+          .card-text {
+            margin: 0.5rem;
+            margin-right: 0.6rem;
+          }
+        </style>
+    </head>
+
+    <body>
+        <!-- heading -->
+        <div class="container mb-4">
+          <a href="{% url 'logout' %}" class="link d-flex justify-content-end">Logout</a>
+          <a class="title display-4 link" href="{% url 'home' %}"><b>Twitter</b></a>
+        </div>
+
+        <!-- tweet feed -->
+        <div class="d-flex flex-row justify-content-center">
+            <div class="col-sm-5 left">
+                {% for tweet in tagged_tweets %}
+                <!-- tweet card -->
+                <div class="card mb-4 tweet-card">
+                  <div class="card-body">
+
+                    <a class="link" href="../profile/user={{tweet.author.id}}">@{{ tweet.author.username }}</a>
+                    <p class="card-text">{{ tweet.content }}</p>
+                    <p style="color: lightgray; font-size: small;" class="card-text">{{ tweet.timestamp }}</p>
+                    
+                    <div class="row d-flex justify-content-end">
+                        <!-- delete button -->
+                        {% if user == tweet.author %}
+                        <form action="delete_tweet/id={{tweet.id}}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="button col" value="{{ tweet.id }}">Delete</button>
+                        </form>
+                        {% endif %}
+    
+                        <!-- like button -->
+                        <form action="like/" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="button col" value="{{ tweet.id }}" name="like_id">
+                                {{ tweet.likes.all.count }}
+                                <i class="fa fa-heart" style="color: lightcoral; margin-left: 0.2rem;"></i>
+                            </button>
+                        </form>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+            </div>
+    </body>
+</html>
+{% endblock %}
