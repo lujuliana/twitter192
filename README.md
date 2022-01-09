@@ -4,7 +4,7 @@
 
 ### How to Run
 ```
-cd Twitter192
+cd twitter192
 pip install -r requirements.txt
 python manage.py makemigrations twitter
 python manage.py migrate
